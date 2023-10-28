@@ -50,7 +50,7 @@ int main() {
             printf("\nQual o tipo do ingresso?");
             printf("\n(1) Entrada inteira.");
             printf("\n(2) Meia Entrada.");
-            printf("\n(3) Isencao.\n\nDigite(1 ou 2):");
+            printf("\n(3) Isencao.\n\nDigite(1, 2 ou 3):");
             scanf("%d", &tipoIngresso);
 
 			//"Salva" o tipo de entrada como uma string para mostrar futuramente no switch case 2.
