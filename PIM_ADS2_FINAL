@@ -1,0 +1,149 @@
+#include <iostream>
+#include <map>
+#include <fstream>
+#include <string>
+#include <map>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <vector>
+
+//Definindo o local de memória para usar a biblioteca iostream
+using namespace std;
+
+int main() {
+	
+	//Usando o map para mapear as senhas para os tipos de ingresso
+    map<int, string> senhaTipoIngresso;
+    map<int, string> senhaexposicao; 
+    int senha=1, opcao, tipoIngresso, s, exposicao;
+	char resposta;
+
+	//Lógica do-while para continuar executando o programa após comprar/resgatar um ingresso.
+	do{
+	
+    //Puxando do arquivo senhas.txt as senhas que recebemos em outras execuções, assim como os tipos de ingresso, só assim o switch case 2 vai funcionar.
+    ifstream arquivo("senhas.txt");
+    if (arquivo.is_open()) {
+        string tipo;
+        while (arquivo >> s >> tipo) {
+            senhaTipoIngresso[s] = tipo;
+            senha = s + 1;
+        }
+        arquivo.close();
+    }
+
+	//"MENU" para identificar a intenção do usuário.
+    printf("\nBEM VINDO A EXPOSICAO\n");
+    printf("\nSe deseja comprar um ingresso para a exposicao, digite 1.");
+    printf("\nSe deseja Resgatar Ingresso, digite 2.\n\nDigite(1 ou 2):");
+    
+    scanf("%d", &opcao);
+
+	//Podemos usar o switch case ou a lógica de ifs compostos, escolhemos usar o switch case pela simplicidade na sintaxe.
+    switch (opcao) {
+        case 1:
+        	
+        	//Identifica qual o tipo de entrada.
+            printf("\n\nSELECIONADO: COMPRA DE INGRESSOS.\n");
+            printf("\nQual o tipo do ingresso?");
+            printf("\n(1) Entrada inteira.");
+            printf("\n(2) Meia Entrada.");
+            printf("\n(3) Isencao.\n\nDigite(1 ou 2):");
+            scanf("%d", &tipoIngresso);
+
+			//"Salva" o tipo de entrada como uma string para mostrar futuramente no switch case 2.
+            if (tipoIngresso == 1) {
+                senhaTipoIngresso[senha] = "Inteira";
+            } else if (tipoIngresso == 2) {
+                senhaTipoIngresso[senha] = "Meia";
+            } else if (tipoIngresso == 3) {
+                senhaTipoIngresso[senha] = "Isencao";
+            }
+			
+			//Identifica qual exposição visitar.
+            printf("\nQual exposicao deseja visitar?");
+			printf("\n(1) A evolucao do T.I.");
+            printf("\n(2) Santos Dumont.");
+            printf("\n(3) Semana da Arte Moderna.");
+            printf("\n(4) Olimpiadas 2024.\n\nDigite(1, 2, 3 ou 4):");
+            scanf("%d", &exposicao);
+
+			//"Salva" a exposição desejada como uma string para mostrar futuramente no switch case 2.
+            if (exposicao == 1) {
+                senhaexposicao[senha] = "A evolucao do T.I (Terreo).";
+            } else if (exposicao == 2) {
+                senhaexposicao[senha] = "Santos Dumont (Primeiro Andar).";
+            } else if (exposicao == 3) {
+                senhaexposicao[senha] = "Semana da Arte Moderna (Segundo Andar).";
+            } else if (exposicao == 4) {
+                senhaexposicao[senha] = "Olimpiadas 2024 (Terceiro Andar).";
+            }
+            
+			//Informa a senha do usuário
+            printf("\nATENCAO! SUA SENHA DE ACESSO E: %d", senha);
+            printf("\nSalve sua senha, pois sera solicitada na entrada!");
+            printf("\nSeu ingresso foi registrado, obrigado pela sua compra.");
+
+            // Incrementa a senha para a próxima compra, assim não são fornecidas senhas repetidas.
+            senha++;
+
+            break;
+
+        case 2:
+        	
+            int verif_senha;
+            printf("\n\nSELECIONADO: RESGATAR INGRESSO\n.");
+            printf("\nPara resgatar seu ingresso, digite a senha que recebeu ao efetuar a compra: ");
+            cin >> verif_senha;
+			
+			//Verifica se a senha digitada pelo usuário está presente no mapa senhaTipoIngresso. find é usada para procurar a senha 
+			//no mapa e senhaTipoIngresso.end() retorna o final do mapa. Se a senha estiver no mapa, o código é executado.
+			
+            if (senhaTipoIngresso.find(verif_senha) != senhaTipoIngresso.end()) {
+                
+                //Verifica se o ingresso já foi utilizado.
+                if(senhaTipoIngresso[verif_senha] == "USADO"){
+					printf("\nINGRESSO JA RESGATADO ANTERIORMENTE, ADQUIRA UM NOVO INGRESSO!.");
+        			}
+        		
+        		//Se o ingresso estiver disponível, libera o acesso e define como usado.
+                else if(senhaTipoIngresso[verif_senha] != "USADO"){
+				
+				printf("\nTudo certo! Seja bem-vindo e bom passeio.");
+                printf("\nTipo de ingresso: ");
+                cout<<senhaTipoIngresso[verif_senha];
+                printf("\nExposicao: ");
+                cout<<senhaexposicao[verif_senha];
+        		senhaTipoIngresso[verif_senha]= "USADO";
+        		
+        	 	
+        		}
+        		
+            } 
+			
+			else {
+            printf("Senha não registrada no sistema.");
+            }
+
+            break;
+
+        default:
+           printf("Voce digitou uma opcao invalida, por favor tente novamente.");
+    }
+
+		printf("\n\nDeseja continuar usando o programa? (S/N): ");
+        cin >> resposta;
+        
+    } while (resposta == 'S' || resposta == 's');
+    
+    //Salvar senhas e tipos de ingresso no arquivo, essa parte é fundamental para na proxima execução, continuarmos de onde paramos.
+    ofstream arquivo_saida("senhas.txt");
+    for (const auto& p : senhaTipoIngresso) {
+        arquivo_saida << p.first << " " << p.second << endl;
+    }
+    arquivo_saida.close();
+
+    return 0;
+}
