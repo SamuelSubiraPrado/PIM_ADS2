@@ -1,0 +1,1 @@
+Este projeto consiste num programa que realiza a venda de tickets para um museu, foi utilizado C++ em sua concepção. Projeto recebe o nome de PIM_ADS pois foi destinado a um projeto de conclusão do Curso de ADS (Análise e desenvolvimento de sistemas).
